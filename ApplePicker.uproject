@@ -1,0 +1,22 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{C5E1B97F-4CCC-3382-25FE-629CAD25BD5E}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "ApplePicker",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "ModelingToolsEditorMode",
+			"Enabled": true,
+			"TargetAllowList": [
+				"Editor"
+			]
+		}
+	]
+}
