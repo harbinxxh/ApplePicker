@@ -5,7 +5,10 @@
 
 // Sets default values
 ATreeBase::ATreeBase()
-	:MovementSpeed(550.0f),	Boundary(850.0f) // 初始化移动速度和边界
+	:MovementSpeed(550.0f),	// 初始化移动速度
+	Boundary(850.0f),		// 初始化移动边界
+	ChanceToRedirect(0.4f),	// 重定向概率
+	RedirectTime(1.0f)		// 重定向间隔
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -21,6 +24,7 @@ void ATreeBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	GetWorld()->GetTimerManager().SetTimer(ChangeDirectionTimer, this, &ATreeBase::ChangeDirection, RedirectTime, true, 2.5f);
 }
 
 // Called every frame
@@ -47,5 +51,15 @@ void ATreeBase::Tick(float DeltaTime)
 	TempLocation.Y += MovementSpeed * DeltaTime;
 	SetActorLocation(TempLocation);
 
+}
+
+void ATreeBase::ChangeDirection()
+{
+	// 返回一个介于 0 和 1（含）之间的随机浮点数。
+	if (FMath::FRand() <= ChanceToRedirect)
+	{
+		// change direction
+		MovementSpeed = MovementSpeed * -1;
+	}
 }
 

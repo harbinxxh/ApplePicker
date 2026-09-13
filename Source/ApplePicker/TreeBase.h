@@ -30,8 +30,22 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	float Boundary;
 
+	// Change to move in opposite direction
+	// 让角色有机会反向移动
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float ChanceToRedirect;
+
+	// 重定向时间
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float RedirectTime;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+private:
+	FTimerHandle ChangeDirectionTimer;
+
+	void ChangeDirection();
 
 };
