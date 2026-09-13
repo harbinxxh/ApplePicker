@@ -5,6 +5,7 @@
 
 // Sets default values
 ATreeBase::ATreeBase()
+	:MovementSpeed(550.0f)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -26,6 +27,13 @@ void ATreeBase::BeginPlay()
 void ATreeBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	FVector TempLocation{ GetActorLocation() }; // 返回此 Actor 的根组件的位置
+	// Add offset
+	// Set new location
+	TempLocation.Y += MovementSpeed * DeltaTime;
+	SetActorLocation(TempLocation);
+
 
 }
 

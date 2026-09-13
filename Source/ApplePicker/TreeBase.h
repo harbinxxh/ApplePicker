@@ -22,6 +22,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* TreeMeshComponent;
 
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float MovementSpeed;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
