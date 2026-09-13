@@ -4,8 +4,8 @@
 #include "TreeBase.h"
 
 // Sets default values
-ATreeBase::ATreeBase()
-	:MovementSpeed(550.0f),	// 初始化移动速度
+ATreeBase::ATreeBase() :
+	MovementSpeed(550.0f),	// 初始化移动速度
 	Boundary(850.0f),		// 初始化移动边界
 	ChanceToRedirect(0.4f),	// 重定向概率
 	RedirectTime(1.0f)		// 重定向间隔
