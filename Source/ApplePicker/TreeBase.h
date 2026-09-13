@@ -25,6 +25,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	float MovementSpeed;
 
+	// Left and Right boundaries
+	// when reached the Tree Actor moves in opposite direction
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float Boundary;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
