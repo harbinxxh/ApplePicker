@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "TreeBase.generated.h"
 
+class AAppleBase;
+
 UCLASS()
 class APPLEPICKER_API ATreeBase : public AActor
 {
@@ -31,13 +33,21 @@ protected:
 	float Boundary;
 
 	// Change to move in opposite direction
-	// 让角色有机会反向移动
+	// 让角色有机会反向移动及重定向概率
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	float ChanceToRedirect;
 
 	// 重定向时间
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	float RedirectTime;
+
+	// 用来记录苹果生成的时间间隔
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float SecondsBetweenAppleDrops;
+
+	// 可以在编辑器里指定具体的对象
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Setup")
+	TSubclassOf<AAppleBase> SpawnObj;
 
 public:	
 	// Called every frame
@@ -48,4 +58,7 @@ private:
 
 	void ChangeDirection();
 
+	FTimerHandle AppleSpwnTimer;
+
+	void SpwanApple();
 };
