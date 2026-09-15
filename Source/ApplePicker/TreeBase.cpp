@@ -64,13 +64,15 @@ void ATreeBase::ChangeDirection()
 {
 	FVector TempPosition = GetActorLocation();
 
+	// Only redirect if within InnerBoundary
+	// 仅在位于内部边界内时才进行改变方向
 	if (TempPosition.Y <= InnerBoundary && TempPosition.Y >= -InnerBoundary)
 	{
 		// 返回一个介于 0 和 1（含）之间的随机浮点数。
 		if (FMath::FRand() <= ChanceToRedirect)
 		{
 			// change direction
-			MovementSpeed = MovementSpeed * -1;
+			MovementSpeed = MovementSpeed * -1.0f;
 		}
 	}
 }

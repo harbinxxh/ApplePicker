@@ -19,6 +19,9 @@ ABasketBase::ABasketBase()
 
 	RootComponent = Root;
 	Paddle1->SetupAttachment(RootComponent);
+
+	// 确定在关卡开始或角色生成时，应自动拥有该Pawn的PlayerController（如果存在的话）
+	AutoPossessPlayer = EAutoReceiveInput::Player0;
 }
 
 // Called when the game starts or when spawned
