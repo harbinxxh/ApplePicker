@@ -30,7 +30,12 @@ protected:
 	// Left and Right boundaries
 	// when reached the Tree Actor moves in opposite direction
 	UPROPERTY(EditAnywhere, Category = "Setup")
-	float Boundary;
+	float OuterBoundary;
+
+	// Tree randomly redirects only if it is within the inner boundary Smooths the redirection at the outer boundary
+	// 只有在内部边界内时，树才会随机改变方向，并在外部边界处平滑过渡改变的方向
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float InnerBoundary;
 
 	// Change to move in opposite direction
 	// 让角色有机会反向移动及重定向概率
@@ -56,6 +61,7 @@ public:
 private:
 	FTimerHandle ChangeDirectionTimer;
 
+	// 改变苹果树方向函数
 	void ChangeDirection();
 
 	FTimerHandle AppleSpwnTimer;

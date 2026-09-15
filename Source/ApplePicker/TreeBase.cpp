@@ -7,10 +7,11 @@
 // Sets default values
 ATreeBase::ATreeBase() :
 	MovementSpeed(550.0f),			// 初始化移动速度
-	Boundary(850.0f),				// 初始化移动边界
-	ChanceToRedirect(0.4f),			// 重定向概率
-	RedirectTime(1.0f),				// 重定向间隔
-	SecondsBetweenAppleDrops(1.0f)	// 用来记录苹果生成的时间间隔
+	OuterBoundary(900.0f),			// 初始化移动外边界
+	ChanceToRedirect(0.4f),			// 改变方向概率
+	RedirectTime(1.0f),				// 改变方向间隔
+	SecondsBetweenAppleDrops(1.0f),	// 用来记录苹果生成的时间间隔
+	InnerBoundary(600.f)			// 初始化移动内边界
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -25,10 +26,10 @@ void ATreeBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// 改变方向
+	// 改变苹果方向定时器
 	GetWorld()->GetTimerManager().SetTimer(ChangeDirectionTimer, this, &ATreeBase::ChangeDirection, RedirectTime, true, 2.5f);
 	
-	// 生成苹果
+	// 生成苹果定时器
 	GetWorld()->GetTimerManager().SetTimer(AppleSpwnTimer, this, &ATreeBase::SpwanApple, SecondsBetweenAppleDrops, true, 2.0f);
 }
 
@@ -40,12 +41,12 @@ void ATreeBase::Tick(float DeltaTime)
 	FVector TempLocation{ GetActorLocation() }; // 返回此 Actor 的根组件的位置
 
 	// Check is Apple Tree within bounds
-	if (TempLocation.Y <= -Boundary)
+	if (TempLocation.Y <= -OuterBoundary)
 	{
 		// Move Right
 		MovementSpeed = FMath::Abs(MovementSpeed);
 	}
-	else if (TempLocation.Y >= Boundary)
+	else if (TempLocation.Y >= OuterBoundary)
 	{
 		// Move Left
 		MovementSpeed = -(FMath::Abs(MovementSpeed));
@@ -58,13 +59,19 @@ void ATreeBase::Tick(float DeltaTime)
 
 }
 
+// 改变苹果树方向函数
 void ATreeBase::ChangeDirection()
 {
-	// 返回一个介于 0 和 1（含）之间的随机浮点数。
-	if (FMath::FRand() <= ChanceToRedirect)
+	FVector TempPosition = GetActorLocation();
+
+	if (TempPosition.Y <= InnerBoundary && TempPosition.Y >= -InnerBoundary)
 	{
-		// change direction
-		MovementSpeed = MovementSpeed * -1;
+		// 返回一个介于 0 和 1（含）之间的随机浮点数。
+		if (FMath::FRand() <= ChanceToRedirect)
+		{
+			// change direction
+			MovementSpeed = MovementSpeed * -1;
+		}
 	}
 }
 
