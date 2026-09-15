@@ -21,6 +21,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* AppleMeshComponent;
+	
+	// 苹果掉落，超出地板的位置
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Setup")
+	float FloorBoundary;
 
 public:	
 	// Called every frame
