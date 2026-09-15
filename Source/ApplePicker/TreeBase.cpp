@@ -18,7 +18,6 @@ ATreeBase::ATreeBase() :
 	TreeMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TreeMeshComponent"));
 
 	RootComponent = TreeMeshComponent;
-
 }
 
 // Called when the game starts or when spawned
@@ -26,8 +25,10 @@ void ATreeBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// 改变方向
 	GetWorld()->GetTimerManager().SetTimer(ChangeDirectionTimer, this, &ATreeBase::ChangeDirection, RedirectTime, true, 2.5f);
-
+	
+	// 生成苹果
 	GetWorld()->GetTimerManager().SetTimer(AppleSpwnTimer, this, &ATreeBase::SpwanApple, SecondsBetweenAppleDrops, true, 2.0f);
 }
 

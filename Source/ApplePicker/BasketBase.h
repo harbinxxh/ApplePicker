@@ -43,6 +43,11 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void StopMove();
 
+	// 必须用 UFunction 宏标记 onHit 成员函数，因为后面要把它绑定到事件或委托
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
+		UPrimitiveComponent* OtherComp, FVector NormalImpluse, const FHitResult& Hit);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -5,6 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
+#include "AppleBase.h"
 
 // Sets default values
 ABasketBase::ABasketBase()
@@ -25,6 +26,7 @@ void ABasketBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	Paddle1->OnComponentHit.AddDynamic(this, &ABasketBase::OnHit);
 }
 
 void ABasketBase::Move(const FInputActionValue& Value)
@@ -41,6 +43,17 @@ void ABasketBase::StopMove()
 {
 	CurrentVelocity.X = 0.0;
 	CurrentVelocity.Y = 0.0;
+}
+
+void ABasketBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
+	UPrimitiveComponent* OtherComp, FVector NormalImpluse, const FHitResult& Hit)
+{
+	AAppleBase* AppleToCatch = Cast<AAppleBase>(OtherActor);
+
+	if (AppleToCatch)
+	{
+		OtherActor->Destroy();
+	}
 }
 
 // Called every frame
