@@ -9,16 +9,24 @@
 
 // Sets default values
 ABasketBase::ABasketBase()
-	: BasketSpeed(700.0f), CurrentVelocity(0.0)
+	: BasketSpeed(700.0f), PaddleOffset(0.0, 0.0, 150.0), CurrentVelocity(0.0)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	Paddle1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Paddle1"));
+	Paddle2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Paddle2"));
+	Paddle3 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Paddle3"));
 
 	RootComponent = Root;
 	Paddle1->SetupAttachment(RootComponent);
+	Paddle2->SetupAttachment(Paddle1);
+	Paddle3->SetupAttachment(Paddle2);
+
+	// 设置组件相对位置
+	Paddle2->SetRelativeLocation(PaddleOffset);
+	Paddle3->SetRelativeLocation(PaddleOffset);
 
 	// 确定在关卡开始或角色生成时，应自动拥有该Pawn的PlayerController（如果存在的话）
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
@@ -30,6 +38,18 @@ void ABasketBase::BeginPlay()
 	Super::BeginPlay();
 	
 	Paddle1->OnComponentHit.AddDynamic(this, &ABasketBase::OnHit);
+	Paddle2->OnComponentHit.AddDynamic(this, &ABasketBase::OnHit);
+	Paddle3->OnComponentHit.AddDynamic(this, &ABasketBase::OnHit);
+}
+
+// 编辑里改变 PaddleOffset 参数，视图里立刻看到效果
+void ABasketBase::PreRegisterAllComponents()
+{
+	Super::PreRegisterAllComponents();
+
+	// 设置组件相对位置
+	Paddle2->SetRelativeLocation(PaddleOffset);
+	Paddle3->SetRelativeLocation(PaddleOffset);
 }
 
 void ABasketBase::Move(const FInputActionValue& Value)

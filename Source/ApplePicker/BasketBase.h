@@ -23,14 +23,27 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	// 对于静态放置的 Actor 和具有原生根组件的生成 Actor，此函数现在会被调用。
+	// 对于没有原生根组件的蓝图 Actor，这些注册函数会在构造过程中稍后调用。
+	virtual void PreRegisterAllComponents() override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* Root;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* Paddle1;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UStaticMeshComponent* Paddle2;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UStaticMeshComponent* Paddle3;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Setup")
 	float BasketSpeed;	// 篮子的速度
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Setup")
+	FVector PaddleOffset;
 
 	UPROPERTY(EditAnywhere, Category = "Input|Input Mapping")
 	UInputMappingContext* DefaultMappingContexts;
