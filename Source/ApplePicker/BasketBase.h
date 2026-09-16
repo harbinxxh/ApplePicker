@@ -19,6 +19,9 @@ public:
 	// Sets default values for this pawn's properties
 	ABasketBase();
 
+	// 处理挡板销毁
+	void HandlePaddleDestruction();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -73,4 +76,7 @@ private:
 	FVector CurrentVelocity; // 用这个向量来记录当前当前速度
 
 	void OnMoveRight(float AxisValue);
+
+	// 挡板数组
+	TArray<UStaticMeshComponent*> PaddleArray;
 };

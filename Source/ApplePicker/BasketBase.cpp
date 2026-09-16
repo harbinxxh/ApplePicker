@@ -28,8 +28,25 @@ ABasketBase::ABasketBase()
 	Paddle2->SetRelativeLocation(PaddleOffset);
 	Paddle3->SetRelativeLocation(PaddleOffset);
 
+	PaddleArray.Push(Paddle1);
+	PaddleArray.Push(Paddle2);
+	PaddleArray.Push(Paddle3);
+
 	// 确定在关卡开始或角色生成时，应自动拥有该Pawn的PlayerController（如果存在的话）
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
+}
+
+// 处理挡板销毁
+void ABasketBase::HandlePaddleDestruction()
+{
+	if (!PaddleArray.IsEmpty())
+	{
+		UStaticMeshComponent* PoppedElement =  PaddleArray.Pop();
+		if (PoppedElement)
+		{
+			PoppedElement->DestroyComponent();
+		}
+	}
 }
 
 // Called when the game starts or when spawned
