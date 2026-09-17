@@ -106,7 +106,16 @@ void ATreeBase::SpwanApple()
 
 void ATreeBase::StopSpawningApples()
 {
-	//GetWorld()->GetTimerManager().ClearTimer(ChangeDirectionTimer);
-	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
-	bShouldMove = false;
+	GetWorld()->GetTimerManager().ClearTimer(AppleSpwnTimer);
+	//GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+}
+
+void ATreeBase::StopRedirecting()
+{
+	GetWorld()->GetTimerManager().ClearTimer(ChangeDirectionTimer);
+}
+
+void ATreeBase::SetShouldMove(bool bInShouldMove)
+{
+	bShouldMove = bInShouldMove;
 }

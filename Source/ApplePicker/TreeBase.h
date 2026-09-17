@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "AppleTreeElementBase.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "TreeBase.generated.h"
@@ -9,7 +10,7 @@
 class AAppleBase;
 
 UCLASS()
-class APPLEPICKER_API ATreeBase : public AActor
+class APPLEPICKER_API ATreeBase : public AAppleTreeElementBase
 {
 	GENERATED_BODY()
 	
@@ -17,8 +18,14 @@ public:
 	// Sets default values for this actor's properties
 	ATreeBase();
 
-	// 停止生成苹果
+	// stop spawning apples
 	void StopSpawningApples();
+
+	// stop redirecting
+	void StopRedirecting();
+
+	// set should move to false
+	void SetShouldMove(bool bInShouldMove);
 
 protected:
 	// Called when the game starts or when spawned

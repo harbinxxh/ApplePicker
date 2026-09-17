@@ -22,6 +22,9 @@ public:
 	// 处理挡板销毁
 	void HandlePaddleDestruction();
 
+	// 获取玩家控制器
+	APlayerController* GetBasketPlayerController() const;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -81,4 +84,6 @@ private:
 
 	// 挡板数组
 	TArray<UStaticMeshComponent*> PaddleArray;
+
+	APlayerController* Controller{ nullptr };
 };

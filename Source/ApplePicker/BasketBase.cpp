@@ -11,7 +11,11 @@
 
 // Sets default values
 ABasketBase::ABasketBase()
-	: BasketSpeed(700.0f), PaddleOffset(0.0, 0.0, 150.0), CurrentVelocity(0.0), CurrentGameMode(nullptr)
+	: BasketSpeed(700.0f)
+	, PaddleOffset(0.0, 0.0, 150.0)
+	, CurrentVelocity(0.0)
+	, CurrentGameMode(nullptr)
+	, Controller(nullptr)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -34,6 +38,11 @@ ABasketBase::ABasketBase()
 	PaddleArray.Push(Paddle2);
 	PaddleArray.Push(Paddle3);
 
+	// 开启 Simulation Generates Hit Events 模拟生成命中事件
+	Paddle1->SetNotifyRigidBodyCollision(true);
+	Paddle2->SetNotifyRigidBodyCollision(true);
+	Paddle3->SetNotifyRigidBodyCollision(true);
+
 	// 确定在关卡开始或角色生成时，应自动拥有该Pawn的PlayerController（如果存在的话）
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 }
@@ -51,6 +60,11 @@ void ABasketBase::HandlePaddleDestruction()
 	}
 }
 
+APlayerController* ABasketBase::GetBasketPlayerController() const
+{
+	return Controller;
+}
+
 // Called when the game starts or when spawned
 void ABasketBase::BeginPlay()
 {
@@ -61,6 +75,8 @@ void ABasketBase::BeginPlay()
 	Paddle3->OnComponentHit.AddDynamic(this, &ABasketBase::OnHit);
 
 	CurrentGameMode = Cast<AApplePickerGameModeBase>(UGameplayStatics::GetGameMode(this));
+
+	Controller = Cast<APlayerController>(GetController());
 }
 
 // 编辑里改变 PaddleOffset 参数，视图里立刻看到效果
@@ -108,11 +124,15 @@ void ABasketBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 void ABasketBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (!CurrentVelocity.IsZero())
+	
+	// 检测 Pawn 的输入处理是否已启用
+	if (InputEnabled())
 	{
-		FVector NewLocation = GetActorLocation() + CurrentVelocity * DeltaTime;
-		SetActorLocation(NewLocation);
+		if (!CurrentVelocity.IsZero())
+		{
+			FVector NewLocation = GetActorLocation() + CurrentVelocity * DeltaTime;
+			SetActorLocation(NewLocation);
+		}
 	}
 }
 

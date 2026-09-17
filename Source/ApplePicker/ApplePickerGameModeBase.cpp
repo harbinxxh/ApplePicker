@@ -37,30 +37,37 @@ void AApplePickerGameModeBase::HandleAppleLost()
 
 	if (ApplesLost >= 3)
 	{
-		//TODO: Stop Spawning Apples
-		TArray<AActor*> FoundTrees;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATreeBase::StaticClass(), FoundTrees);
+		TArray<AActor*> FoundAppleTreeElements;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAppleTreeElementBase::StaticClass(), FoundAppleTreeElements);
 
-		for (auto Ptr : FoundTrees)
+		for (auto Ptr : FoundAppleTreeElements)
 		{
-			ATreeBase* PtrTemp = Cast<ATreeBase>(Ptr);
-			if (PtrTemp != nullptr)
+			if (ATreeBase* TempTreePtr = Cast<ATreeBase>(Ptr))
 			{
-				PtrTemp->StopSpawningApples();
+				// stop spawning apples
+				TempTreePtr->StopSpawningApples();
+				
+				// stop redirecting
+				TempTreePtr->StopRedirecting();
+				
+				// set should move to false
+				TempTreePtr->SetShouldMove(false);
+			}
+			else if (AAppleBase* TempApplePtr = Cast<AAppleBase>(Ptr))
+			{
+				//TODO: Destroy Remaining Apples
+				TempApplePtr->Destroy();
 			}
 		}
 
-		//TODO: Destroy Remaining Apples
-		TArray<AActor*> FoundApples;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAppleBase::StaticClass(), FoundApples);
-
-		for (auto Ptr : FoundApples)
+		if (Basket && Basket->GetBasketPlayerController())
 		{
-			AAppleBase* PtrTemp = Cast<AAppleBase>(Ptr);
-			if (PtrTemp != nullptr)
-			{
-				PtrTemp->Destroy();
-			}
+			// 禁用玩家输入
+			Basket->DisableInput(Basket->GetBasketPlayerController());
+			
+			// 关闭定时器
+			//Basket->SetActorTickEnabled(false);
+			//Basket->SetActorHiddenInGame(true);
 		}
 	}
 }
