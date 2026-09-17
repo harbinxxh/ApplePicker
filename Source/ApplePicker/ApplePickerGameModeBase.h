@@ -15,7 +15,6 @@ class APPLEPICKER_API AApplePickerGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 	
 public:
-	
 	// 处理苹果获取
 	void HandleAppleCaught();
 	
@@ -25,6 +24,17 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	// 处理游戏结束
+	// BlueprintNativeEvent：该函数可以被蓝图所覆盖，但同时也具有在C++中的默认实现
+	UFUNCTION(BlueprintNativeEvent)
+	void HandleGameOver(bool bWonGame);
+
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	int32 ApplesToCatch{ 10 };
+
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	int32 ApplesToLose{ 3 };
 
 private:
 	int32 ApplesCaught{ 0 };

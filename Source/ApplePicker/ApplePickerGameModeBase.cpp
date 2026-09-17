@@ -21,6 +21,11 @@ void AApplePickerGameModeBase::HandleAppleCaught()
 
 	UE_LOG(LogTemp, Warning, TEXT("Apple Caught!"));
 	UE_LOG(LogTemp, Warning, TEXT("Total Apples Caught: %d"), ApplesCaught);
+
+	if (ApplesCaught >= ApplesToCatch)
+	{
+		HandleGameOver(true);
+	}
 }
 
 void AApplePickerGameModeBase::HandleAppleLost()
@@ -35,40 +40,45 @@ void AApplePickerGameModeBase::HandleAppleLost()
 		Basket->HandlePaddleDestruction();
 	}
 
-	if (ApplesLost >= 3)
+	if (ApplesLost >= ApplesToLose)
 	{
-		TArray<AActor*> FoundAppleTreeElements;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAppleTreeElementBase::StaticClass(), FoundAppleTreeElements);
-
-		for (auto Ptr : FoundAppleTreeElements)
-		{
-			if (ATreeBase* TempTreePtr = Cast<ATreeBase>(Ptr))
-			{
-				// stop spawning apples
-				TempTreePtr->StopSpawningApples();
-				
-				// stop redirecting
-				TempTreePtr->StopRedirecting();
-				
-				// set should move to false
-				TempTreePtr->SetShouldMove(false);
-			}
-			else if (AAppleBase* TempApplePtr = Cast<AAppleBase>(Ptr))
-			{
-				//TODO: Destroy Remaining Apples
-				TempApplePtr->Destroy();
-			}
-		}
-
-		if (Basket && Basket->GetBasketPlayerController())
-		{
-			// 禁用玩家输入
-			Basket->DisableInput(Basket->GetBasketPlayerController());
-			
-			// 关闭定时器
-			//Basket->SetActorTickEnabled(false);
-			//Basket->SetActorHiddenInGame(true);
-		}
+		// We lose the game
+		HandleGameOver(false);
 	}
 }
 
+void AApplePickerGameModeBase::HandleGameOver_Implementation(bool bWonGame)
+{
+	TArray<AActor*> FoundAppleTreeElements;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAppleTreeElementBase::StaticClass(), FoundAppleTreeElements);
+
+	for (auto Ptr : FoundAppleTreeElements)
+	{
+		if (ATreeBase* TempTreePtr = Cast<ATreeBase>(Ptr))
+		{
+			// stop spawning apples
+			TempTreePtr->StopSpawningApples();
+
+			// stop redirecting
+			TempTreePtr->StopRedirecting();
+
+			// set should move to false
+			TempTreePtr->SetShouldMove(false);
+		}
+		else if (AAppleBase* TempApplePtr = Cast<AAppleBase>(Ptr))
+		{
+			//TODO: Destroy Remaining Apples
+			TempApplePtr->Destroy();
+		}
+	}
+
+	if (Basket && Basket->GetBasketPlayerController())
+	{
+		// 禁用玩家输入
+		Basket->DisableInput(Basket->GetBasketPlayerController());
+
+		// 关闭定时器
+		//Basket->SetActorTickEnabled(false);
+		//Basket->SetActorHiddenInGame(true);
+	}
+}
