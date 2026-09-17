@@ -6,10 +6,12 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "AppleBase.h"
+#include "Kismet/GameplayStatics.h"
+#include "ApplePickerGameModeBase.h"
 
 // Sets default values
 ABasketBase::ABasketBase()
-	: BasketSpeed(700.0f), PaddleOffset(0.0, 0.0, 150.0), CurrentVelocity(0.0)
+	: BasketSpeed(700.0f), PaddleOffset(0.0, 0.0, 150.0), CurrentVelocity(0.0), CurrentGameMode(nullptr)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -57,6 +59,8 @@ void ABasketBase::BeginPlay()
 	Paddle1->OnComponentHit.AddDynamic(this, &ABasketBase::OnHit);
 	Paddle2->OnComponentHit.AddDynamic(this, &ABasketBase::OnHit);
 	Paddle3->OnComponentHit.AddDynamic(this, &ABasketBase::OnHit);
+
+	CurrentGameMode = Cast<AApplePickerGameModeBase>(UGameplayStatics::GetGameMode(this));
 }
 
 // 编辑里改变 PaddleOffset 参数，视图里立刻看到效果
@@ -85,13 +89,17 @@ void ABasketBase::StopMove()
 	CurrentVelocity.Y = 0.0;
 }
 
-void ABasketBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
-	UPrimitiveComponent* OtherComp, FVector NormalImpluse, const FHitResult& Hit)
+void ABasketBase::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpluse, const FHitResult& Hit)
 {
 	AAppleBase* AppleToCatch = Cast<AAppleBase>(OtherActor);
 
 	if (AppleToCatch)
 	{
+		if (CurrentGameMode != nullptr)
+		{
+			CurrentGameMode->HandleAppleCaught();
+		}
+
 		OtherActor->Destroy();
 	}
 }

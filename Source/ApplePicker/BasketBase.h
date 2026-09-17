@@ -75,6 +75,8 @@ public:
 private:
 	FVector CurrentVelocity; // 用这个向量来记录当前当前速度
 
+	class AApplePickerGameModeBase* CurrentGameMode{ nullptr };
+
 	void OnMoveRight(float AxisValue);
 
 	// 挡板数组
