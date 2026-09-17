@@ -17,6 +17,9 @@ public:
 	// Sets default values for this actor's properties
 	ATreeBase();
 
+	// 停止生成苹果
+	void StopSpawningApples();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -67,4 +70,7 @@ private:
 	FTimerHandle AppleSpwnTimer;
 
 	void SpwanApple();
+
+	// 是否停止树移动
+	bool bShouldMove;
 };

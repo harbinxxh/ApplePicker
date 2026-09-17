@@ -5,13 +5,14 @@
 #include "AppleBase.h"
 
 // Sets default values
-ATreeBase::ATreeBase() :
-	MovementSpeed(550.0f),			// 初始化移动速度
-	OuterBoundary(900.0f),			// 初始化移动外边界
-	ChanceToRedirect(0.4f),			// 改变方向概率
-	RedirectTime(1.0f),				// 改变方向间隔
-	SecondsBetweenAppleDrops(1.0f),	// 用来记录苹果生成的时间间隔
-	InnerBoundary(600.f)			// 初始化移动内边界
+ATreeBase::ATreeBase()
+	:MovementSpeed(550.0f)			// 初始化移动速度
+	,OuterBoundary(900.0f)			// 初始化移动外边界
+	,InnerBoundary(600.f)			// 初始化移动内边界
+	,ChanceToRedirect(0.4f)			// 改变方向概率
+	,RedirectTime(1.0f)				// 改变方向间隔
+	,SecondsBetweenAppleDrops(1.0f)	// 用来记录苹果生成的时间间隔
+	,bShouldMove(true)				// 是否停止树移动
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -28,7 +29,6 @@ void ATreeBase::BeginPlay()
 	
 	// 改变苹果方向定时器
 	GetWorld()->GetTimerManager().SetTimer(ChangeDirectionTimer, this, &ATreeBase::ChangeDirection, RedirectTime, true, 2.5f);
-	
 	// 生成苹果定时器
 	GetWorld()->GetTimerManager().SetTimer(AppleSpwnTimer, this, &ATreeBase::SpwanApple, SecondsBetweenAppleDrops, true, 2.0f);
 }
@@ -38,24 +38,27 @@ void ATreeBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	FVector TempLocation{ GetActorLocation() }; // 返回此 Actor 的根组件的位置
-
-	// Check is Apple Tree within bounds
-	if (TempLocation.Y <= -OuterBoundary)
+	if (bShouldMove)
 	{
-		// Move Right
-		MovementSpeed = FMath::Abs(MovementSpeed);
-	}
-	else if (TempLocation.Y >= OuterBoundary)
-	{
-		// Move Left
-		MovementSpeed = -(FMath::Abs(MovementSpeed));
-	}
+		FVector TempLocation{ GetActorLocation() }; // 返回此 Actor 的根组件的位置
 
-	// Add offset
-	// Set new location
-	TempLocation.Y += MovementSpeed * DeltaTime;
-	SetActorLocation(TempLocation);
+		// Check is Apple Tree within bounds
+		if (TempLocation.Y <= -OuterBoundary)
+		{
+			// Move Right
+			MovementSpeed = FMath::Abs(MovementSpeed);
+		}
+		else if (TempLocation.Y >= OuterBoundary)
+		{
+			// Move Left
+			MovementSpeed = -(FMath::Abs(MovementSpeed));
+		}
+
+		// Add offset
+		// Set new location
+		TempLocation.Y += MovementSpeed * DeltaTime;
+		SetActorLocation(TempLocation);
+	}
 
 }
 
@@ -101,3 +104,9 @@ void ATreeBase::SpwanApple()
 	GetWorld()->SpawnActor<AAppleBase>(SpawnObj, SpawnLoc, SpawnRot);
 }
 
+void ATreeBase::StopSpawningApples()
+{
+	//GetWorld()->GetTimerManager().ClearTimer(ChangeDirectionTimer);
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+	bShouldMove = false;
+}

@@ -4,6 +4,8 @@
 #include "ApplePickerGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "BasketBase.h"
+#include "AppleBase.h"
+#include "TreeBase.h"
 
 
 void AApplePickerGameModeBase::BeginPlay()
@@ -33,8 +35,33 @@ void AApplePickerGameModeBase::HandleAppleLost()
 		Basket->HandlePaddleDestruction();
 	}
 
-	//TODO: Stop Spawning Apples
+	if (ApplesLost >= 3)
+	{
+		//TODO: Stop Spawning Apples
+		TArray<AActor*> FoundTrees;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATreeBase::StaticClass(), FoundTrees);
 
-	//TODO: Destroy Remaining Apples
+		for (auto Ptr : FoundTrees)
+		{
+			ATreeBase* PtrTemp = Cast<ATreeBase>(Ptr);
+			if (PtrTemp != nullptr)
+			{
+				PtrTemp->StopSpawningApples();
+			}
+		}
+
+		//TODO: Destroy Remaining Apples
+		TArray<AActor*> FoundApples;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAppleBase::StaticClass(), FoundApples);
+
+		for (auto Ptr : FoundApples)
+		{
+			AAppleBase* PtrTemp = Cast<AAppleBase>(Ptr);
+			if (PtrTemp != nullptr)
+			{
+				PtrTemp->Destroy();
+			}
+		}
+	}
 }
 
