@@ -12,7 +12,7 @@ ATreeBase::ATreeBase()
 	,ChanceToRedirect(0.4f)			// 改变方向概率
 	,RedirectTime(1.0f)				// 改变方向间隔
 	,SecondsBetweenAppleDrops(1.0f)	// 用来记录苹果生成的时间间隔
-	,bShouldMove(true)				// 是否停止树移动
+	,bShouldMove(false)				// 是否停止树移动
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -26,11 +26,7 @@ ATreeBase::ATreeBase()
 void ATreeBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	// 改变苹果方向定时器
-	GetWorld()->GetTimerManager().SetTimer(ChangeDirectionTimer, this, &ATreeBase::ChangeDirection, RedirectTime, true, 2.5f);
-	// 生成苹果定时器
-	GetWorld()->GetTimerManager().SetTimer(AppleSpwnTimer, this, &ATreeBase::SpwanApple, SecondsBetweenAppleDrops, true, 2.0f);
+
 }
 
 // Called every frame
@@ -65,17 +61,20 @@ void ATreeBase::Tick(float DeltaTime)
 // 改变苹果树方向函数
 void ATreeBase::ChangeDirection()
 {
-	FVector TempPosition = GetActorLocation();
-
-	// Only redirect if within InnerBoundary
-	// 仅在位于内部边界内时才进行改变方向
-	if (TempPosition.Y <= InnerBoundary && TempPosition.Y >= -InnerBoundary)
+	if (bShouldMove)
 	{
-		// 返回一个介于 0 和 1（含）之间的随机浮点数。
-		if (FMath::FRand() <= ChanceToRedirect)
+		FVector TempPosition = GetActorLocation();
+
+		// Only redirect if within InnerBoundary
+		// 仅在位于内部边界内时才进行改变方向
+		if (TempPosition.Y <= InnerBoundary && TempPosition.Y >= -InnerBoundary)
 		{
-			// change direction
-			MovementSpeed = MovementSpeed * -1.0f;
+			// 返回一个介于 0 和 1（含）之间的随机浮点数。
+			if (FMath::FRand() <= ChanceToRedirect)
+			{
+				// change direction
+				MovementSpeed = MovementSpeed * -1.0f;
+			}
 		}
 	}
 }
@@ -108,6 +107,18 @@ void ATreeBase::StopSpawningApples()
 {
 	GetWorld()->GetTimerManager().ClearTimer(AppleSpwnTimer);
 	//GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+}
+
+void ATreeBase::StartSpawningApples()
+{
+	// 生成苹果定时器
+	GetWorld()->GetTimerManager().SetTimer(AppleSpwnTimer, this, &ATreeBase::SpwanApple, SecondsBetweenAppleDrops, true, 2.0f);
+}
+
+void ATreeBase::StartRedirecting()
+{
+	// 改变苹果方向定时器
+	GetWorld()->GetTimerManager().SetTimer(ChangeDirectionTimer, this, &ATreeBase::ChangeDirection, RedirectTime, true);
 }
 
 void ATreeBase::StopRedirecting()

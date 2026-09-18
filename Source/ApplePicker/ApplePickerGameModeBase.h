@@ -36,9 +36,18 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	int32 ApplesToLose{ 3 };
 
+	// 开始启动游戏的秒数
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float GameStartDelay{ 3.0f };
+
 private:
 	int32 ApplesCaught{ 0 };
 	int32 ApplesLost{ 0 };
 
 	class ABasketBase* Basket{ nullptr };
+
+	// 游戏开始处理逻辑
+	void HandleGameStart();
+
+	FTimerHandle GameStartCountdownTimer;
 };

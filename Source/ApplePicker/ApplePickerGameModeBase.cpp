@@ -13,6 +13,18 @@ void AApplePickerGameModeBase::BeginPlay()
 	Super::BeginPlay();
 
 	Basket = Cast<ABasketBase>(UGameplayStatics::GetPlayerPawn(this, 0));
+	if (Basket)
+	{
+		// 游戏启动时，先禁用游戏输入
+		Basket->DisableInput(nullptr);
+	}
+
+	// 游戏启动定时器
+	GetWorld()->GetTimerManager().SetTimer(GameStartCountdownTimer
+										, this
+										, &ThisClass::HandleGameStart
+										, GameStartDelay
+										, false);
 }
 
 void AApplePickerGameModeBase::HandleAppleCaught()
@@ -24,6 +36,7 @@ void AApplePickerGameModeBase::HandleAppleCaught()
 
 	if (ApplesCaught >= ApplesToCatch)
 	{
+		// We win the game
 		HandleGameOver(true);
 	}
 }
@@ -76,9 +89,38 @@ void AApplePickerGameModeBase::HandleGameOver_Implementation(bool bWonGame)
 	{
 		// 禁用玩家输入
 		Basket->DisableInput(Basket->GetBasketPlayerController());
-
-		// 关闭定时器
-		//Basket->SetActorTickEnabled(false);
+		// 关闭Pawn定时器
+		Basket->SetActorTickEnabled(false);
 		//Basket->SetActorHiddenInGame(true);
+	}
+}
+
+// 游戏开始处理逻辑
+void AApplePickerGameModeBase::HandleGameStart()
+{
+	TArray<AActor*> FoundAppleTreeElements;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAppleTreeElementBase::StaticClass(), FoundAppleTreeElements);
+
+	for (auto Ptr : FoundAppleTreeElements)
+	{
+		if (ATreeBase* TempTreePtr = Cast<ATreeBase>(Ptr))
+		{
+			// start spawning apples
+			TempTreePtr->StartSpawningApples();
+
+			// start redirecting
+			TempTreePtr->StartRedirecting();
+
+			// set should move to false
+			TempTreePtr->SetShouldMove(true);
+		}
+	}
+
+	if (Basket && Basket->GetBasketPlayerController())
+	{
+		// 启动玩家输入
+		Basket->EnableInput(Basket->GetBasketPlayerController());
+		// 启动 Pawn 定时器
+		Basket->SetActorTickEnabled(true);
 	}
 }

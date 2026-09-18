@@ -18,6 +18,12 @@ public:
 	// Sets default values for this actor's properties
 	ATreeBase();
 
+	// Start spawning apples
+	void StartSpawningApples();
+
+	// Start redirecting
+	void StartRedirecting();
+
 	// stop spawning apples
 	void StopSpawningApples();
 
