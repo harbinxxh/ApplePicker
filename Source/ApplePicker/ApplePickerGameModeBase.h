@@ -21,6 +21,10 @@ public:
 	// 处理苹果丢失
 	void HandleAppleLost();
 
+	// 返回开始启动游戏的秒数
+	UFUNCTION(BlueprintCallable)
+	float GetGameStartDelay() const;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -38,7 +42,7 @@ protected:
 
 	// 开始启动游戏的秒数
 	UPROPERTY(EditAnywhere, Category = "Setup")
-	float GameStartDelay{ 3.0f };
+	float GameStartDelay{ 5.0f };
 
 private:
 	int32 ApplesCaught{ 0 };
