@@ -60,6 +60,11 @@ void AApplePickerGameModeBase::HandleAppleLost()
 	}
 }
 
+float AApplePickerGameModeBase::GetGameStartDelay() const
+{
+	return GameStartDelay;
+}
+
 void AApplePickerGameModeBase::HandleGameOver_Implementation(bool bWonGame)
 {
 	TArray<AActor*> FoundAppleTreeElements;
