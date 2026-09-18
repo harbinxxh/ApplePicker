@@ -6,11 +6,21 @@
 #include "BasketBase.h"
 #include "AppleBase.h"
 #include "TreeBase.h"
-
+#include "ApplePickerWidgetBase.h"
 
 void AApplePickerGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (GameWidgetType)
+	{
+		Widget = Cast<UApplePickerWidgetBase>(CreateWidget( GetWorld(), GameWidgetType) );
+		if (Widget)
+		{
+			Widget->AddToViewport();
+			UpdateWidgetText();
+		}
+	}
 
 	Basket = Cast<ABasketBase>(UGameplayStatics::GetPlayerPawn(this, 0));
 	if (Basket)
@@ -30,6 +40,7 @@ void AApplePickerGameModeBase::BeginPlay()
 void AApplePickerGameModeBase::HandleAppleCaught()
 {
 	ApplesCaught = ApplesCaught + 1;
+	UpdateWidgetText();
 
 	UE_LOG(LogTemp, Warning, TEXT("Apple Caught!"));
 	UE_LOG(LogTemp, Warning, TEXT("Total Apples Caught: %d"), ApplesCaught);
@@ -98,6 +109,11 @@ void AApplePickerGameModeBase::HandleGameOver_Implementation(bool bWonGame)
 		Basket->SetActorTickEnabled(false);
 		//Basket->SetActorHiddenInGame(true);
 	}
+
+	if (Widget)
+	{
+		Widget->SetGameOverText(bWonGame);
+	}
 }
 
 // 游戏开始处理逻辑
@@ -127,5 +143,13 @@ void AApplePickerGameModeBase::HandleGameStart()
 		Basket->EnableInput(Basket->GetBasketPlayerController());
 		// 启动 Pawn 定时器
 		Basket->SetActorTickEnabled(true);
+	}
+}
+
+void AApplePickerGameModeBase::UpdateWidgetText()
+{
+	if (Widget)
+	{
+		Widget->SetApplesCollectedText(ApplesCaught, ApplesToCatch);
 	}
 }

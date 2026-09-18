@@ -41,8 +41,15 @@ protected:
 	int32 ApplesToLose{ 3 };
 
 	// 开始启动游戏的秒数
-	UPROPERTY(EditAnywhere, Category = "Setup")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Setup")
 	float GameStartDelay{ 5.0f };
+
+	// To specify widget blueprint/type in Editor
+	UPROPERTY(EditAnywhere, Category = "Widgets")
+	TSubclassOf<class UUserWidget> GameWidgetType;
+
+	UPROPERTY()
+	class UApplePickerWidgetBase* Widget;
 
 private:
 	int32 ApplesCaught{ 0 };
@@ -55,4 +62,7 @@ private:
 
 	// 游戏启动定时器
 	FTimerHandle GameStartCountdownTimer;
+
+	// 显示收集的苹果数量，并更新UI界面
+	void UpdateWidgetText();
 };
