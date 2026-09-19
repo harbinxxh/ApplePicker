@@ -4,6 +4,7 @@
 #include "AppleBase.h"
 #include "ApplePickerGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h"
 
 // Sets default values
 AAppleBase::AAppleBase()
@@ -15,6 +16,16 @@ AAppleBase::AAppleBase()
 	AppleMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AppleMeshComponent"));
 
 	RootComponent = AppleMeshComponent;
+}
+
+void AAppleBase::Destroyed()
+{
+	Super::Destroyed();
+
+	if (AppleDestroyedParticles != nullptr && AppleDestroyedParticles->IsValid())
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, AppleDestroyedParticles, GetActorLocation());
+	}
 }
 
 // Called when the game starts or when spawned

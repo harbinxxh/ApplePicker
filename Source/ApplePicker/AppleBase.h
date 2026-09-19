@@ -16,12 +16,17 @@ public:
 	// Sets default values for this actor's properties
 	AAppleBase();
 
+	virtual void Destroyed() override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UStaticMeshComponent* AppleMeshComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Particle Effects")
+	class UNiagaraSystem* AppleDestroyedParticles;
 	
 	// 苹果掉落，超出地板的位置
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Setup")
