@@ -26,6 +26,11 @@ void AAppleBase::Destroyed()
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, AppleDestroyedParticles, GetActorLocation());
 	}
+
+	if (AppleSound != nullptr)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, AppleSound, GetActorLocation());
+	}
 }
 
 // Called when the game starts or when spawned

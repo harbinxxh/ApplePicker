@@ -32,6 +32,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Setup")
 	float FloorBoundary;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sounds")
+	class USoundBase* AppleSound;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
