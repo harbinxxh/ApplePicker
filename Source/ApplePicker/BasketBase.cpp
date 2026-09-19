@@ -8,6 +8,7 @@
 #include "AppleBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "ApplePickerGameModeBase.h"
+#include "NiagaraFunctionLibrary.h"
 
 // Sets default values
 ABasketBase::ABasketBase()
@@ -55,7 +56,14 @@ void ABasketBase::HandlePaddleDestruction()
 		UStaticMeshComponent* PoppedElement =  PaddleArray.Pop();
 		if (PoppedElement)
 		{
+			FVector PaddleLocation = PoppedElement->GetComponentLocation();
+
 			PoppedElement->DestroyComponent();
+
+			if (PaddleLostParticles != nullptr && PaddleLostParticles->IsValid())
+			{
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, PaddleLostParticles, PaddleLocation);
+			}
 		}
 	}
 }

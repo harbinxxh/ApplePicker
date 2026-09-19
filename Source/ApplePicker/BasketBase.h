@@ -45,6 +45,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* Paddle3;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Particle Effects")
+	class UNiagaraSystem* PaddleLostParticles;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Setup")
 	float BasketSpeed;	// 篮子的速度
 
